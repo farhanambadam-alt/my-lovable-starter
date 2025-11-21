@@ -128,18 +128,20 @@ function App() {
   }, [files]);
 
   useEffect(() => {
-    if (!process.env.API_KEY) {
+    const apiKey = import.meta.env.VITE_API_KEY;
+    
+    if (!apiKey) {
         console.error("API_KEY is missing!");
         setMessages(prev => [...prev, {
             id: generateId(),
             role: 'system',
-            content: "Error: API_KEY is missing in environment variables.",
+            content: "Error: VITE_API_KEY is missing in environment variables.",
             timestamp: Date.now()
         }]);
         return;
     }
 
-    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const ai = new GoogleGenAI({ apiKey: apiKey });
     chatSessionRef.current = ai.chats.create({
       model: 'gemini-3-pro-preview',
       config: {
